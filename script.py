@@ -5,7 +5,6 @@ import json
 import os
 from dateutil import parser
 
-
 def format_date(date_str):
   if not date_str:
     return "nema"
@@ -38,8 +37,6 @@ def send_discord(event):
    }
    response = requests.post(WEBHOOK_URL, json=payload)
 
-
-
 URL = "https://www.soum.si/dogodki-soum/"
 headers = {
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"
@@ -47,14 +44,14 @@ headers = {
 SAVE_FILE = "existing_events.json"
 ARCHIVE_FILE = "events_archive.json"
 
-# get save file z eventi
+# get save file with events
 if os.path.exists(SAVE_FILE) and os.path.getsize(SAVE_FILE) > 0:
   with open(SAVE_FILE, "r", encoding="utf-8") as file:
-    saved_events = json.load(file) # "r" pomeni da naj reada
+    saved_events = json.load(file)
 else:
   saved_events = {}
 
-# get archive da lahk appendas
+# get archive to append to it
 if os.path.exists(ARCHIVE_FILE) and os.path.getsize(ARCHIVE_FILE) > 0:
   with open(ARCHIVE_FILE, "r", encoding="utf-8") as file:
     archived_events = json.load(file)
@@ -62,7 +59,6 @@ else:
   archived_events = {}
 
 current_events = {}
-
 
 # get html
 try:
@@ -73,28 +69,13 @@ except requests.exceptions.RequestException as e:
   sys.exit(1)
 
 juha = BeautifulSoup(res.text, "html.parser")
-print(res)
-#print(res.text[:1000])
+#print(res)
 
-# get html dele ko so oznaceni z .eventon_list_event
+# get html parts tagged with .eventon_list_event
 events = juha.select(".eventon_list_event")
 print("tulk eventov trenutno: " + str(len(events)))
 
 for event in events:
-
-    # to neki gleda neko stvar od nekega eventON plugina ko ga uporabljajo
-    # namest tega sm uporabu spodi sam un <script> tag ko ma vspodi json
-    # za vsak event ko ga majo, pa bolj pametne stvari pise.
-    # drugac mas pa za oboje primer kak zgledata v note.txt
-    #
-    #pprint.pprint(event.attrs)
-    #title_element = event.select_one(".evcal_event_title");
-    #title = title_element.getText(strip=True) if title_element else "Ni naslova"
-    #print()
-    #print(title)
-    #---------------------------------------------------------------------------
-
-
     script_block = event.select_one('script[type="application/ld+json"]')
     if script_block:
         event_data = json.loads(script_block.string)
@@ -105,11 +86,6 @@ for event in events:
         start_date = event_data.get("startDate")
         end_date = event_data.get("endDate")
         image = event_data.get("image")
-
-        #print()
-        #print(event_id)
-        #print(name)
-        #print(url)
 
         current_events[event_id] = {
             "ime": name,
