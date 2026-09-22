@@ -17,7 +17,7 @@ def format_date(date_str):
     return date_str
 
 def send_discord(event):
-   WEBHOOK_URL = "https://discord.com/api/webhooks/1551583825052700842/zfzXOo9ENrmxNeEhYTCiBpgW1ve2a22PzMlhXBcikm9q9oaJYeTIR3_DLZSuqIVzI_Dm"
+   WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
    payload = {
       "username": "SOUM Dogodki alert",
