@@ -1,4 +1,4 @@
-name: Run Date Script
+name: Run SOUM Script
 
 on:
   schedule:

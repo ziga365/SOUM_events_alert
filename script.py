@@ -1,7 +1,7 @@
+import sys
 import requests
 from bs4 import BeautifulSoup
 import json
-import pprint
 import os
 from dateutil import parser
 
@@ -65,9 +65,14 @@ current_events = {}
 
 
 # get html
-res = requests.get(URL, headers=headers)
-juha = BeautifulSoup(res.text, "html.parser")
+try:
+  res = requests.get(URL, headers=headers)
+  res.raise_for_status()
+except requests.exceptions.RequestException as e:
+  print(f"Neki slo narobe s stranjo: {e}", file=sys.stderr)
+  sys.exit(1)
 
+juha = BeautifulSoup(res.text, "html.parser")
 print(res)
 #print(res.text[:1000])
 
@@ -95,7 +100,7 @@ for event in events:
         event_data = json.loads(script_block.string)
 
         event_id = event_data.get('@id')
-        name = event_data.get('name').strip()
+        name = (event_data.get('name') or "").strip()
         url = event_data.get('url')
         start_date = event_data.get("startDate")
         end_date = event_data.get("endDate")
