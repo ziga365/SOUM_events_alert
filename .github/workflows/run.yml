@@ -2,7 +2,7 @@ name: Run SOUM Script
 
 on:
   schedule:
-    - cron: '*/15 5-15 * * *'
+    - cron: '*/5 2-22 * * *'
   workflow_dispatch:
 
 jobs:
