@@ -65,7 +65,7 @@ try:
   res = requests.get(URL, headers=headers)
   res.raise_for_status()
 except requests.exceptions.RequestException as e:
-  print(f"Neki slo narobe s stranjo: {e}", file=sys.stderr)
+  print(f"Something went wrong: {e}", file=sys.stderr)
   sys.exit(1)
 
 juha = BeautifulSoup(res.text, "html.parser")
@@ -74,6 +74,8 @@ juha = BeautifulSoup(res.text, "html.parser")
 # get html parts tagged with .eventon_list_event
 events = juha.select(".eventon_list_event")
 print("tulk eventov trenutno: " + str(len(events)))
+if not events:
+   sys.exit(1)
 
 for event in events:
     script_block = event.select_one('script[type="application/ld+json"]')
